@@ -1,11 +1,11 @@
 {
   "name": "@ontosdk/mcp",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Official Onto MCP server — clean Markdown and AIO scoring for any URL, available as MCP tools for Claude Code, Cursor, and any MCP client.",
   "type": "module",
   "main": "./dist/server.js",
   "bin": {
-    "onto-mcp": "./dist/server.js"
+    "onto-mcp": "dist/server.js"
   },
   "files": [
     "dist/**/*",
