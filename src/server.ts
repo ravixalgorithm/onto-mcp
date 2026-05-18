@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /* Onto MCP Server — exposes the Onto Read API as Model Context Protocol tools.
  *
  * Tools: read_url, score_url, read_and_score.
