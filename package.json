@@ -1,0 +1,62 @@
+{
+  "name": "@ontosdk/mcp",
+  "version": "1.0.0",
+  "description": "Official Onto MCP server — clean Markdown and AIO scoring for any URL, available as MCP tools for Claude Code, Cursor, and any MCP client.",
+  "type": "module",
+  "main": "./dist/server.js",
+  "bin": {
+    "onto-mcp": "./dist/server.js"
+  },
+  "files": [
+    "dist/**/*",
+    "examples/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "node dist/server.js",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agents",
+    "claude",
+    "cursor",
+    "onto",
+    "markdown",
+    "web-scraping",
+    "agent-tools",
+    "aio-score"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ravixalgorithm/onto-mcp.git"
+  },
+  "homepage": "https://buildonto.dev",
+  "bugs": {
+    "url": "https://github.com/ravixalgorithm/onto-mcp/issues"
+  },
+  "author": {
+    "name": "Onto",
+    "email": "founder@buildonto.dev",
+    "url": "https://buildonto.dev"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
