@@ -1,0 +1,39 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.ravixalgorithm/onto",
+  "title": "Onto",
+  "description": "Clean Markdown and AI-readability scoring for any URL. Built for AI agents.",
+  "websiteUrl": "https://buildonto.dev",
+  "repository": {
+    "url": "https://github.com/ravixalgorithm/onto-mcp",
+    "source": "github"
+  },
+  "version": "1.1.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@ontosdk/mcp",
+      "version": "1.1.2",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "ONTO_API_KEY",
+          "description": "Your Onto API key (get one at https://app.buildonto.dev/read/keys — free tier includes 1,000 requests/month).",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "ONTO_API_BASE",
+          "description": "Optional override for the Onto API base URL. Defaults to https://api.buildonto.dev.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}

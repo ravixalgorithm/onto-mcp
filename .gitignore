@@ -6,3 +6,6 @@ dist/
 .DS_Store
 npm-debug.log*
 *.log
+# MCP Registry CLI binary — downloaded locally, not source
+mcp-publisher.exe
+mcp-publisher

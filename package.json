@@ -1,6 +1,7 @@
 {
   "name": "@ontosdk/mcp",
-  "version": "1.1.1",
+  "version": "1.1.2",
+  "mcpName": "io.github.ravixalgorithm/onto",
   "description": "Official Onto MCP server — clean Markdown and AIO scoring for any URL, available as MCP tools for Claude Code, Cursor, and any MCP client.",
   "type": "module",
   "main": "./dist/index.js",
