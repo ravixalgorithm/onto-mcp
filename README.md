@@ -40,7 +40,7 @@ Add to your Claude Code MCP config:
   "mcpServers": {
     "onto": {
       "command": "npx",
-      "args": ["-y", "@ontosdk/mcp"],
+      "args": ["-y", "@ontosdk/mcp@latest"],
       "env": {
         "ONTO_API_KEY": "onto_sk_live_your_key_here"
       }
@@ -60,7 +60,7 @@ Add to Cursor's MCP configuration (Settings → Features → MCP):
   "mcpServers": {
     "onto": {
       "command": "npx",
-      "args": ["-y", "@ontosdk/mcp"],
+      "args": ["-y", "@ontosdk/mcp@latest"],
       "env": {
         "ONTO_API_KEY": "onto_sk_live_your_key_here"
       }

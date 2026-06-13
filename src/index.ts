@@ -1,5 +1,5 @@
 /* Programmatic exports for embedding the Onto tools in custom MCP setups.
- * Most users should run the bin via `npx @ontosdk/mcp`; this file is for
+ * Most users should run the bin via `npx @ontosdk/mcp@latest`; this file is for
  * power users wiring tools into their own Server instance. */
 
 export { readUrl, readUrlInputSchema, type ReadUrlInput } from './tools/read.js';

@@ -1,13 +1,13 @@
 /* Onto MCP Server — exposes the Onto Read API as Model Context Protocol tools.
  *
- * Tools: read_url, score_url, read_and_score.
+ * Tools: read_url, score_url, read_and_score, batch, map_site, extract_data.
  * Reads ONTO_API_KEY from env. Defaults base URL to https://api.buildonto.dev.
  *
  * Install in Claude Code:
  *   "mcpServers": {
  *     "onto": {
  *       "command": "npx",
- *       "args": ["-y", "@ontosdk/mcp"],
+ *       "args": ["-y", "@ontosdk/mcp@latest"],
  *       "env": { "ONTO_API_KEY": "onto_sk_live_..." }
  *     }
  *   }
