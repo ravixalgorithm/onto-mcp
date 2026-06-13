@@ -4,13 +4,18 @@ The official Onto Model Context Protocol server. Add clean web content reading a
 
 ## What this does
 
-Onto's MCP server exposes three tools to any AI agent:
+Onto's MCP server exposes these tools to any AI agent:
 
 - **`read_url`** — Read any URL and get back clean, agent-ready Markdown (typically 10× smaller than raw HTML)
 - **`score_url`** — Get the AIO (AI-readability) score for any URL with a breakdown of what helps and what hurts AI consumption
 - **`read_and_score`** — Both at once: clean content plus quality assessment so the agent knows how much to trust the source
+- **`batch`** — Read, score, or extract many URLs (an explicit list or a whole site) in one call
+- **`map_site`** — Discover a site's URLs via its sitemap, without reading them
+- **`extract_data`** — Return the structured data a page already declares (JSON-LD, OpenGraph, meta)
 
-This is the official MCP wrapper for the [Onto Read API](https://api.buildonto.dev).
+Every tool response ends with a one-line **⚡ Onto report** — reduction, tokens saved, and AIO score — so the value is visible on every call.
+
+This is the official MCP wrapper for the [Onto Read API](https://api.buildonto.dev). It's a thin, deterministic layer: Onto cleans and scores with a rule-based engine (no LLM in the loop), so your agent's own model never has to parse raw HTML.
 
 ## Why use this?
 
@@ -44,7 +49,7 @@ Add to your Claude Code MCP config:
 }
 ```
 
-Restart Claude Code. The `read_url`, `score_url`, and `read_and_score` tools will appear in the available tools list.
+Restart Claude Code. The Onto tools (`read_url`, `score_url`, `read_and_score`, `batch`, `map_site`, `extract_data`) will appear in the available tools list.
 
 ### 3. Install in Cursor
 
@@ -102,6 +107,40 @@ Returns the AIO (AI-readability) score for a URL — 0-100 with a letter grade, 
 Returns clean Markdown plus the AIO score in one call. Recommended default for agentic workflows.
 
 **Input:** same as `read_url`.
+
+### `batch`
+
+Process many URLs in **one call** — billed as a single request, so you don't spend a credit per URL. Give an explicit list or a base URL whose pages are auto-discovered.
+
+**Input:**
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `urls` | string[] | one of | Explicit list of URLs (max 50). Use this **or** `site`. |
+| `site` | string | one of | Base URL whose pages are auto-discovered via sitemap. Use this **or** `urls`. |
+| `mode` | `"read"` \| `"read-and-score"` \| `"extract"` | no | What to do per URL (default `"read-and-score"`) |
+| `limit` | number | no | Site mode only: max pages to discover (default 25, max 50) |
+
+### `map_site`
+
+Discover a site's URLs (sitemap → on-page links) without reading them. Cheap — use it to plan which pages to read or batch next.
+
+**Input:**
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `url` | string | yes | Base URL of the site to map |
+| `limit` | number | no | Max URLs to return (default 100, max 1000) |
+
+### `extract_data`
+
+Return the structured data a page already declares — JSON-LD, OpenGraph, and meta tags — plus the AIO score. Deterministic; no fields are inferred by a model.
+
+**Input:**
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `url` | string | yes | URL to extract structured data from |
 
 ## Pricing
 
