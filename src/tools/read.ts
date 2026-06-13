@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { callOntoApi } from '../lib/api-client.js';
 import { formatToolError } from '../lib/errors.js';
+import { ontoReport } from '../lib/report.js';
 import type { ReadResponse } from '../lib/types.js';
 
 export const readUrlInputSchema = z.object({
@@ -32,7 +33,11 @@ export async function readUrl(input: ReadUrlInput): Promise<CallToolResult> {
         { type: 'text' as const, text: result.markdown },
         {
           type: 'text' as const,
-          text: `\n\n---\n\n**Source metadata (from Onto):**\n${metaLines}`,
+          text: `\n\n---\n\n**Source metadata (from Onto):**\n${metaLines}\n\n${ontoReport({
+            rawKb: result.stats.raw_html_size_kb,
+            cleanKb: result.stats.markdown_size_kb,
+            reductionPercent: result.stats.reduction_percent,
+          })}`,
         },
       ],
     };

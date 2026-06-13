@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { callOntoApi } from '../lib/api-client.js';
 import { formatToolError } from '../lib/errors.js';
+import { ontoReport } from '../lib/report.js';
 import type { ScoreResponse, Recommendation } from '../lib/types.js';
 
 export const scoreUrlInputSchema = z.object({
@@ -65,6 +66,8 @@ export function formatScoreSummary(result: ScoreResponse): string {
   lines.push(`- Raw size: ${result.stats.raw_size}`);
   lines.push(`- Efficiency: ${result.stats.efficiency}`);
   lines.push(`- Extraction time: ${result.stats.extraction_time_ms} ms`);
+  lines.push('');
+  lines.push(ontoReport({ aioScore: result.aio_score, risk: result.hallucination_risk }));
 
   return lines.join('\n');
 }

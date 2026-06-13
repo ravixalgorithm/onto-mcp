@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { callOntoApi } from '../lib/api-client.js';
 import { formatToolError } from '../lib/errors.js';
+import { ontoReport } from '../lib/report.js';
 import type { ReadAndScoreResponse } from '../lib/types.js';
 
 export const readAndScoreInputSchema = z.object({
@@ -26,6 +27,14 @@ export async function readAndScore(input: ReadAndScoreInput): Promise<CallToolRe
       `- Cache: ${result.cache.hit ? 'HIT' : 'MISS'}`,
       '',
       trustHint,
+      '',
+      ontoReport({
+        rawKb: result.stats.raw_html_size_kb,
+        cleanKb: result.stats.markdown_size_kb,
+        reductionPercent: result.stats.reduction_percent,
+        aioScore: result.aio_score,
+        risk: result.hallucination_risk,
+      }),
     ];
 
     return {

@@ -75,6 +75,59 @@ export interface ReadAndScoreResponse {
   };
 }
 
+export interface BatchResult {
+  url: string;
+  ok: boolean;
+  error?: { code: string; message: string };
+  title?: string;
+  aio_score?: number;
+  grade?: string;
+  hallucination_risk?: 'low' | 'medium' | 'high';
+  reduction_percent?: number;
+  markdown?: string;
+  structured?: {
+    jsonLd: unknown[];
+    openGraph: Record<string, string>;
+    meta: Record<string, string>;
+  };
+  counts?: { json_ld: number; open_graph: number; meta: number };
+}
+
+export interface BatchResponse {
+  status: 'success';
+  mode: 'read' | 'read-and-score' | 'extract';
+  source: 'urls' | 'site';
+  requested: number;
+  succeeded: number;
+  results: BatchResult[];
+  cache: { hit: boolean; ttl_seconds: number };
+}
+
+export interface MapResponse {
+  status: 'success';
+  url: string;
+  source: 'sitemap' | 'links';
+  count: number;
+  urls: string[];
+  cache: { hit: boolean; ttl_seconds: number };
+}
+
+export interface ExtractResponse {
+  status: 'success';
+  url: string;
+  title: string;
+  aio_score: number;
+  grade: string;
+  hallucination_risk: 'low' | 'medium' | 'high';
+  structured: {
+    jsonLd: unknown[];
+    openGraph: Record<string, string>;
+    meta: Record<string, string>;
+  };
+  counts: { json_ld: number; open_graph: number; meta: number };
+  cache: { hit: boolean; ttl_seconds: number };
+}
+
 export interface ApiErrorBody {
   status: 'error';
   error: string;

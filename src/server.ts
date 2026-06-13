@@ -25,6 +25,9 @@ import {
 import { readUrl, readUrlInputSchema } from './tools/read.js';
 import { scoreUrl, scoreUrlInputSchema } from './tools/score.js';
 import { readAndScore, readAndScoreInputSchema } from './tools/read-and-score.js';
+import { batchRead, batchInputSchema } from './tools/batch.js';
+import { mapSite, mapInputSchema } from './tools/map.js';
+import { extractData, extractInputSchema } from './tools/extract.js';
 import { version } from './lib/version.js';
 
 if (!process.env.ONTO_API_KEY) {
@@ -95,6 +98,68 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         required: ['url'],
       },
     },
+    {
+      name: 'batch',
+      description:
+        'Process many URLs in ONE call (billed as one request) — so you do not spend a credit per URL. Give either "urls" (an explicit list, up to 50) or "site" (a base URL whose pages are auto-discovered via sitemap). "mode" picks what to do per URL: "read" (Markdown), "read-and-score" (Markdown + AIO trust score, default), or "extract" (JSON-LD + OpenGraph + meta + score). Use this for full-site reads or bulk URL processing.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          urls: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Explicit list of URLs to process (up to 50). Use this OR "site".',
+          },
+          site: {
+            type: 'string',
+            description: 'Base URL of a site whose pages will be auto-discovered. Use this OR "urls".',
+          },
+          mode: {
+            type: 'string',
+            enum: ['read', 'read-and-score', 'extract'],
+            description: 'What to do per URL. Default "read-and-score".',
+          },
+          limit: {
+            type: 'number',
+            description: 'Site mode only: max pages to discover (default 25, max 50).',
+          },
+        },
+      },
+    },
+    {
+      name: 'map_site',
+      description:
+        'Discover a site\'s URLs (from sitemap.xml, falling back to on-page links) without reading them. Fast and cheap — use it to plan which pages to read or crawl next.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          url: {
+            type: 'string',
+            description: 'The site URL to map.',
+          },
+          limit: {
+            type: 'number',
+            description: 'Max URLs to return (default 100, max 1000).',
+          },
+        },
+        required: ['url'],
+      },
+    },
+    {
+      name: 'extract_data',
+      description:
+        'Extract the structured data a page already declares — JSON-LD (schema.org), OpenGraph cards, and meta tags — plus the AIO trust score. Deterministic, no AI: returns only data present in the page. Use for fast, reliable facts (prices, products, articles) when the site publishes structured data.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          url: {
+            type: 'string',
+            description: 'The URL to extract structured data from.',
+          },
+        },
+        required: ['url'],
+      },
+    },
   ],
 }));
 
@@ -114,6 +179,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'read_and_score': {
         const validated = readAndScoreInputSchema.parse(args ?? {});
         return await readAndScore(validated);
+      }
+      case 'batch': {
+        const validated = batchInputSchema.parse(args ?? {});
+        return await batchRead(validated);
+      }
+      case 'map_site': {
+        const validated = mapInputSchema.parse(args ?? {});
+        return await mapSite(validated);
+      }
+      case 'extract_data': {
+        const validated = extractInputSchema.parse(args ?? {});
+        return await extractData(validated);
       }
       default:
         throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
