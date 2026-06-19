@@ -17,10 +17,10 @@ export interface OntoReportInput {
   cleanKb?: number;
   /** Percentage shrink from raw → clean. */
   reductionPercent?: number;
-  /** AIO readability score 0–100, when available. */
-  aioScore?: number;
-  /** Hallucination-risk band, when available. */
-  risk?: 'low' | 'medium' | 'high';
+  /** AIO readability score 0–100, when available (null for PDFs). */
+  aioScore?: number | null;
+  /** Hallucination-risk band, when available (null for PDFs). */
+  risk?: 'low' | 'medium' | 'high' | null;
 }
 
 /** Estimated input tokens saved by serving Markdown instead of raw HTML. */

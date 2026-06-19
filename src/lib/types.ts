@@ -32,9 +32,10 @@ export interface Recommendation {
 export interface ScoreResponse {
   status: 'success';
   url: string;
-  aio_score: number;
-  grade: string;
-  hallucination_risk: 'low' | 'medium' | 'high';
+  // null for PDFs — text is extracted, but the AIO scorer is HTML-only.
+  aio_score: number | null;
+  grade: string | null;
+  hallucination_risk: 'low' | 'medium' | 'high' | null;
   insights: Record<string, boolean>;
   penalties: string[];
   benefits: string[];
@@ -45,6 +46,7 @@ export interface ScoreResponse {
     extraction_time_ms: number;
   };
   bot_preview?: unknown;
+  note?: string;
 }
 
 export interface ReadAndScoreResponse {
@@ -56,9 +58,10 @@ export interface ReadAndScoreResponse {
     description: string;
     language?: string;
   };
-  aio_score: number;
-  grade: string;
-  hallucination_risk: 'low' | 'medium' | 'high';
+  // null for PDFs — text is extracted, but the AIO scorer is HTML-only.
+  aio_score: number | null;
+  grade: string | null;
+  hallucination_risk: 'low' | 'medium' | 'high' | null;
   insights: Record<string, boolean>;
   penalties: string[];
   benefits: string[];
@@ -116,9 +119,10 @@ export interface ExtractResponse {
   status: 'success';
   url: string;
   title: string;
-  aio_score: number;
-  grade: string;
-  hallucination_risk: 'low' | 'medium' | 'high';
+  // null for PDFs — they declare no HTML structured data and aren't AIO-scored.
+  aio_score: number | null;
+  grade: string | null;
+  hallucination_risk: 'low' | 'medium' | 'high' | null;
   structured: {
     jsonLd: unknown[];
     openGraph: Record<string, string>;

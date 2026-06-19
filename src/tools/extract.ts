@@ -7,6 +7,7 @@ import type { ExtractResponse } from '../lib/types.js';
 
 export const extractInputSchema = z.object({
   url: z.string().url(),
+  fresh: z.boolean().optional().default(false),
 });
 
 export type ExtractInput = z.infer<typeof extractInputSchema>;
@@ -14,7 +15,7 @@ export type ExtractInput = z.infer<typeof extractInputSchema>;
 export async function extractData(input: ExtractInput): Promise<CallToolResult> {
   try {
     const result = await callOntoApi<ExtractResponse>('/v1/extract', {
-      body: { url: input.url },
+      body: { url: input.url, fresh: input.fresh },
     });
 
     const og = Object.entries(result.structured.openGraph);

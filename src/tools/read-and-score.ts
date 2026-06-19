@@ -18,24 +18,42 @@ export async function readAndScore(input: ReadAndScoreInput): Promise<CallToolRe
       body: { url: input.url, fresh: input.fresh },
     });
 
-    const trustHint = trustLine(result.aio_score, result.hallucination_risk);
-    const summaryLines = [
-      `**Source quality assessment (from Onto):**`,
-      `- AIO Score: ${result.aio_score}/100 (${result.grade})`,
-      `- Hallucination risk: ${result.hallucination_risk}`,
-      `- Reduction: ${result.stats.reduction_percent}% (${result.stats.raw_html_size_kb} KB → ${result.stats.markdown_size_kb} KB)`,
-      `- Cache: ${result.cache.hit ? 'HIT' : 'MISS'}`,
-      '',
-      trustHint,
-      '',
-      ontoReport({
-        rawKb: result.stats.raw_html_size_kb,
-        cleanKb: result.stats.markdown_size_kb,
-        reductionPercent: result.stats.reduction_percent,
-        aioScore: result.aio_score,
-        risk: result.hallucination_risk,
-      }),
-    ];
+    const sizeLine = `- Reduction: ${result.stats.reduction_percent}% (${result.stats.raw_html_size_kb} KB → ${result.stats.markdown_size_kb} KB)`;
+    const cacheLine = `- Cache: ${result.cache.hit ? 'HIT' : 'MISS'}`;
+
+    // PDFs return aio_score: null — text was extracted, but the AIO scorer is
+    // HTML-only. Render that honestly instead of "null/100".
+    const summaryLines =
+      result.aio_score == null
+        ? [
+            `**Source quality assessment (from Onto):**`,
+            `- AIO Score: not scored — this URL is a PDF (text extracted, no HTML structure to grade).`,
+            sizeLine,
+            cacheLine,
+            '',
+            ontoReport({
+              rawKb: result.stats.raw_html_size_kb,
+              cleanKb: result.stats.markdown_size_kb,
+              reductionPercent: result.stats.reduction_percent,
+            }),
+          ]
+        : [
+            `**Source quality assessment (from Onto):**`,
+            `- AIO Score: ${result.aio_score}/100 (${result.grade})`,
+            `- Hallucination risk: ${result.hallucination_risk}`,
+            sizeLine,
+            cacheLine,
+            '',
+            trustLine(result.aio_score, result.hallucination_risk),
+            '',
+            ontoReport({
+              rawKb: result.stats.raw_html_size_kb,
+              cleanKb: result.stats.markdown_size_kb,
+              reductionPercent: result.stats.reduction_percent,
+              aioScore: result.aio_score,
+              risk: result.hallucination_risk,
+            }),
+          ];
 
     return {
       content: [
@@ -48,7 +66,7 @@ export async function readAndScore(input: ReadAndScoreInput): Promise<CallToolRe
   }
 }
 
-function trustLine(score: number, risk: 'low' | 'medium' | 'high'): string {
+function trustLine(score: number, risk: 'low' | 'medium' | 'high' | null): string {
   if (risk === 'high' || score < 40) {
     return 'Trust signal: low — this source is poorly structured for AI consumption. Verify any facts before relying on them.';
   }

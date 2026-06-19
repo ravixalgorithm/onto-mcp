@@ -26,12 +26,21 @@ export async function scoreUrl(input: ScoreUrlInput): Promise<CallToolResult> {
 }
 
 export function formatScoreSummary(result: ScoreResponse): string {
-  const lines: string[] = [
-    `**AIO Score:** ${result.aio_score}/100 (${result.grade})`,
-    `**Hallucination risk:** ${result.hallucination_risk}`,
-    `**URL:** ${result.url}`,
-    '',
-  ];
+  // PDFs return aio_score: null — text was extracted, but the AIO scorer is
+  // HTML-only. Render that honestly instead of "null/100".
+  const lines: string[] =
+    result.aio_score == null
+      ? [
+          `**AIO Score:** not scored — this URL is a PDF (text extracted, no HTML structure to grade).`,
+          `**URL:** ${result.url}`,
+          '',
+        ]
+      : [
+          `**AIO Score:** ${result.aio_score}/100 (${result.grade})`,
+          `**Hallucination risk:** ${result.hallucination_risk}`,
+          `**URL:** ${result.url}`,
+          '',
+        ];
 
   if (result.benefits.length > 0) {
     lines.push('**What works well:**');
