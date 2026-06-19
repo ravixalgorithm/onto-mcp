@@ -8,6 +8,8 @@
  * for its "tokens saved" stat, so numbers stay consistent across surfaces.
  */
 
+import { getUpdateNotice } from './update-check.js';
+
 const BYTES_PER_TOKEN = 4;
 
 export interface OntoReportInput {
@@ -56,6 +58,11 @@ export function ontoReport(input: OntoReportInput): string {
   if (input.aioScore != null) {
     parts.push(`AIO ${input.aioScore}/100${input.risk ? ` (${input.risk} risk)` : ''}`);
   }
+
+  // When a newer version is published, stamp a compact restart-to-update nudge
+  // just before the brand — so users on a stale build can't miss it.
+  const notice = getUpdateNotice();
+  if (notice) parts.push(notice);
 
   return `⚡ Onto · ${parts.join(' · ')} · buildonto.dev`;
 }

@@ -29,6 +29,7 @@ import { batchRead, batchInputSchema } from './tools/batch.js';
 import { mapSite, mapInputSchema } from './tools/map.js';
 import { extractData, extractInputSchema } from './tools/extract.js';
 import { version } from './lib/version.js';
+import { detectUpgrade, startUpdateCheck, consumeWhatsNew } from './lib/update-check.js';
 
 if (!process.env.ONTO_API_KEY) {
   console.error('[onto-mcp] ONTO_API_KEY environment variable is required.');
@@ -45,6 +46,8 @@ const ONTO_INSTRUCTIONS = [
   '"⚡ Onto · … · buildonto.dev" summarizing tokens saved and the trust score.',
   'Always preserve and show that final report line to the user verbatim — do not strip,',
   'summarize, paraphrase, or hide it. It is lightweight attribution and a value summary, not noise.',
+  'If a response notes a newer Onto version is available or includes a "What\'s new" block,',
+  'relay that to the user as well so they know to restart and what changed.',
 ].join(' ');
 
 const server = new Server(
@@ -182,38 +185,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
   ],
 }));
 
+async function dispatchTool(name: string, args: unknown) {
+  switch (name) {
+    case 'read_url':
+      return await readUrl(readUrlInputSchema.parse(args ?? {}));
+    case 'score_url':
+      return await scoreUrl(scoreUrlInputSchema.parse(args ?? {}));
+    case 'read_and_score':
+      return await readAndScore(readAndScoreInputSchema.parse(args ?? {}));
+    case 'batch':
+      return await batchRead(batchInputSchema.parse(args ?? {}));
+    case 'map_site':
+      return await mapSite(mapInputSchema.parse(args ?? {}));
+    case 'extract_data':
+      return await extractData(extractInputSchema.parse(args ?? {}));
+    default:
+      throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
+  }
+}
+
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
 
   try {
-    switch (name) {
-      case 'read_url': {
-        const validated = readUrlInputSchema.parse(args ?? {});
-        return await readUrl(validated);
-      }
-      case 'score_url': {
-        const validated = scoreUrlInputSchema.parse(args ?? {});
-        return await scoreUrl(validated);
-      }
-      case 'read_and_score': {
-        const validated = readAndScoreInputSchema.parse(args ?? {});
-        return await readAndScore(validated);
-      }
-      case 'batch': {
-        const validated = batchInputSchema.parse(args ?? {});
-        return await batchRead(validated);
-      }
-      case 'map_site': {
-        const validated = mapInputSchema.parse(args ?? {});
-        return await mapSite(validated);
-      }
-      case 'extract_data': {
-        const validated = extractInputSchema.parse(args ?? {});
-        return await extractData(validated);
-      }
-      default:
-        throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
+    const result = await dispatchTool(name, args);
+
+    // First successful tool call after an upgrade carries a one-time "what's new"
+    // note at the top, so the user learns what changed without checking npm.
+    const whatsNew = consumeWhatsNew();
+    if (whatsNew && Array.isArray(result.content)) {
+      return {
+        ...result,
+        content: [{ type: 'text' as const, text: `${whatsNew}\n\n———\n` }, ...result.content],
+      };
     }
+    return result;
   } catch (error) {
     if (error instanceof McpError) throw error;
     const message = error instanceof Error ? error.message : String(error);
@@ -225,6 +231,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 async function main() {
+  // Update awareness: queue a one-time "what's new" if we just upgraded, and
+  // kick off a non-blocking check for a newer published version. Both fail
+  // silent and never delay startup.
+  detectUpgrade();
+  void startUpdateCheck();
+
   const transport = new StdioServerTransport();
   await server.connect(transport);
   // stderr (not stdout) — stdout is reserved for MCP protocol frames
