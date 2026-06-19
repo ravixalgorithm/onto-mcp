@@ -9,3 +9,4 @@ npm-debug.log*
 # MCP Registry CLI binary — downloaded locally, not source
 mcp-publisher.exe
 mcp-publisher
+.tools/
