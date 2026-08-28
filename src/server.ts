@@ -118,7 +118,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     {
       name: 'batch',
       description:
-        'Process many URLs in ONE call (billed as one request) — so you do not spend a credit per URL. Give either "urls" (an explicit list, up to 50) or "site" (a base URL whose pages are auto-discovered via sitemap). "mode" picks what to do per URL: "read" (Markdown), "read-and-score" (Markdown + AIO trust score, default), or "extract" (JSON-LD + OpenGraph + meta + score). Use this for full-site reads or bulk URL processing.',
+        'Process many URLs in ONE call. Costs N credits — one per URL in the list after the list is known; failed URLs (ok: false) are refunded. Default mode "read-and-score" is still N, not 2N. Give either "urls" (an explicit list, up to 50) or "site" (a base URL whose pages are auto-discovered via sitemap). "mode" picks what to do per URL: "read" (Markdown), "read-and-score" (Markdown + AIO trust score, default), or "extract" (JSON-LD + OpenGraph + meta + score). Use this for full-site reads or bulk URL processing.',
       inputSchema: {
         type: 'object',
         properties: {

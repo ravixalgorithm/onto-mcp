@@ -45,4 +45,4 @@ Add to the `mcpServers` object (create the key if it doesn't exist):
 
 ## Where to get an API key
 
-[app.buildonto.dev/read/keys](https://app.buildonto.dev/read/keys) — free tier includes 1,000 requests/month, no credit card.
+[app.buildonto.dev/read/keys](https://app.buildonto.dev/read/keys) — free tier includes 1,000 credits/month, no credit card.

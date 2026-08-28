@@ -29,7 +29,7 @@ Onto strips the noise server-side, returns the agent-ready format, and reports a
 
 Sign up at [app.buildonto.dev](https://app.buildonto.dev) and create an API key at **Read → Keys**.
 
-Free tier: 1,000 requests / month. No credit card.
+Free tier: 1,000 credits / month. No credit card.
 
 ### 2. Install in Claude Code
 
@@ -110,7 +110,7 @@ Returns clean Markdown plus the AIO score in one call. Recommended default for a
 
 ### `batch`
 
-Process many URLs in **one call** — billed as a single request, so you don't spend a credit per URL. Give an explicit list or a base URL whose pages are auto-discovered.
+Process many URLs in **one call**. **N credits** — one per URL in the list after the list is known. Failed URLs (`ok: false`) are refunded. Default mode `read-and-score` is still N, not 2N. Give an explicit list or a base URL whose pages are auto-discovered.
 
 **Input:**
 
@@ -123,7 +123,7 @@ Process many URLs in **one call** — billed as a single request, so you don't s
 
 ### `map_site`
 
-Discover a site's URLs (sitemap → on-page links) without reading them. Cheap — use it to plan which pages to read or batch next.
+Discover a site's URLs (sitemap → on-page links) without reading them. **1 credit per call** (not per discovered URL) — use it to plan which pages to read or batch next.
 
 **Input:**
 
@@ -144,13 +144,26 @@ Return the structured data a page already declares — JSON-LD, OpenGraph, and m
 
 ## Pricing
 
-| Tier | Monthly requests | Price |
+| Tier | Monthly credits | Price |
 |---|---|---|
 | Free | 1,000 | $0 |
 | Starter | 10,000 | $9 |
 | Growth | 100,000 | $49 |
 | Scale | 500,000 | $250 |
 | Enterprise | Custom | Contact sales |
+
+MCP tool credits match the live API meter:
+
+| Tool | Credits |
+|---|---|
+| `read_url` | 1 |
+| `read_and_score` | 1 |
+| `score_url` | 0 (free) |
+| `extract_data` | 1 |
+| `map_site` | 1 per call (not per discovered URL) |
+| `batch` | N — one per URL in the list after the list is known; failed URLs (`ok: false`) are refunded. Default mode `read-and-score` is still N, not 2N |
+
+Connect / OAuth is not a debit.
 
 Manage your subscription at [app.buildonto.dev/read/billing](https://app.buildonto.dev/read/billing). Credit packs ($5–$200) are available for overflow once you're on a paid tier.
 

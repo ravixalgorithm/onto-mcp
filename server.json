@@ -21,7 +21,7 @@
       "environmentVariables": [
         {
           "name": "ONTO_API_KEY",
-          "description": "Your Onto API key (get one at https://app.buildonto.dev/read/keys — free tier includes 1,000 requests/month).",
+          "description": "Your Onto API key (get one at https://app.buildonto.dev/read/keys — free tier includes 1,000 credits/month).",
           "isRequired": true,
           "isSecret": true,
           "format": "string"
