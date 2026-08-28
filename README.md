@@ -53,7 +53,7 @@ Restart Claude Code. The Onto tools (`read_url`, `score_url`, `read_and_score`, 
 
 ### 3. Install in Cursor
 
-Add to Cursor's MCP configuration (Settings → Features → MCP):
+Add the Onto server to `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (this repo). Or use the UI: **Customize** (sidebar) → **MCPs** → add a custom server, same JSON.
 
 ```json
 {
@@ -68,6 +68,8 @@ Add to Cursor's MCP configuration (Settings → Features → MCP):
   }
 }
 ```
+
+Fully quit Cursor (Cmd+Q / Ctrl+Q) and reopen.
 
 See [`examples/`](./examples/) for Cline, Zed, and Continue configs.
 
