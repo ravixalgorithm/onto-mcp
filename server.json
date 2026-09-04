@@ -8,13 +8,13 @@
     "url": "https://github.com/ravixalgorithm/onto-mcp",
     "source": "github"
   },
-  "version": "1.5.0",
+  "version": "1.5.2",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@ontosdk/mcp",
-      "version": "1.5.0",
+      "version": "1.5.2",
       "transport": {
         "type": "stdio"
       },
@@ -34,6 +34,12 @@
           "format": "string"
         }
       ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.buildonto.dev/mcp"
     }
   ]
 }
