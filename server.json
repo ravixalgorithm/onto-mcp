@@ -8,20 +8,20 @@
     "url": "https://github.com/ravixalgorithm/onto-mcp",
     "source": "github"
   },
-  "version": "1.5.0",
+  "version": "1.5.2",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@ontosdk/mcp",
-      "version": "1.5.0",
+      "version": "1.5.2",
       "transport": {
         "type": "stdio"
       },
       "environmentVariables": [
         {
           "name": "ONTO_API_KEY",
-          "description": "Your Onto API key (get one at https://app.buildonto.dev/read/keys — free tier includes 1,000 credits/month).",
+          "description": "Your Onto API key (get one at https://app.buildonto.dev/read/keys).",
           "isRequired": true,
           "isSecret": true,
           "format": "string"
@@ -34,6 +34,12 @@
           "format": "string"
         }
       ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.buildonto.dev/mcp"
     }
   ]
 }
